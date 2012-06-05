@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block body %}
+  {% for name, status in machines.iteritems() %}
+  <li><h3><a href="./{{ name }}">{{ name }}<a></h3></li>{{ status|safe }}
+  {% else %}
+    <li><em>Unbelievable.  No machine here so far</em>
+  {% endfor %}
+
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block body %}
+    <h1>{{ name }}</h1>
+    <label>Status:</label><span>{{ status }}</span>
+    <div>
+        {% if status == "STOPPED" %}
+        <a href="./start">Start</a>
+        {% else %} 
+        <a href="./stop">Stop</a> 
+        {% endif %}
+        <a href="./info">Info</a> 
+    </div>
+
+{% endblock %}
