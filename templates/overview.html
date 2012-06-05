@@ -10,11 +10,11 @@
         <td>{{ status }}</td>
         <td>
         {% if status == "STOPPED" %}
-        <a href="./start">Start</a>
+        <a href="./{{name}}/start">Start</a>
         {% else %} 
-        <a href="./stop">Stop</a> 
+        <a href="./{{name}}stop">Stop</a> 
         {% endif %}
-        <a href="./info">Info</a> 
+        <a href="./{{name}}/info">Info</a> 
         </td>
     </tr>
   {% else %}
