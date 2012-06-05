@@ -38,10 +38,13 @@ def info(name):
 
 @app.route('/<name>/<action>')
 def action(name, action):
+    WAITMAP = {'start': 'RUNNING', 'freeze': 'FROZEN', 'unfreeze': 'RUNNING', 'stop': 'STOPPED'}
     args = [action, "-n", name]
     if action == "start":
         args.append("-d")
     result = command("lxc", *args)
+    if action in WAITMAP:
+        command("lxc", 'wait', "-n", name, "-s", WAITMAP[action])
     if action != "info":
         return redirect(url_for('info', name=name))
     else:
