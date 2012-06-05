@@ -19,14 +19,16 @@ def command(cmd, *args):
 
 @app.route('/')
 def show_container():
-    results = command("lxc", "ls", "-x").strip().split("\n")
-    machines = dict( (x, "STOPPED") for x in results[0].strip().split(" ") if x)
-    
-    if len(results) > 1:
-        for x in results[1].split(" "):
-            if x:
-                machines[x] = "RUNNING"
-    return render_template('overview.html', machines=machines)
+    names = command("lxc", "ls", "-x").strip().split()
+    machines = dict()
+    for name in names:
+        if not name:
+            continue
+        state = "STOPPED"
+        if names.count(name) > 1:
+            state = "RUNNING"
+        machines[name] = state
+    return render_template('overview.html', machines=sorted(machines.items()))
 
 @app.route('/<name>/')
 def info(name):
