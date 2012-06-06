@@ -2,12 +2,11 @@
 {% block body %}
 <table>
     <tr>
-        <th>Name</th><th>Status</th><th>Actions</th>
+        <th>Name</th><th>Actions</th>
     </tr>
     {% for m in machines %}
     <tr>
-        <td>{{ m.name }}</td>
-        <td class="status_{{m.status}}">{{ m.status }}</td>
+        <td class="status_{{m.status}}">{{ m.name }}</td>
         <td>
         {% if m.status == "STOPPED" %}
         <div class="action" onclick="if (confirm('Start machine?')) location='./{{m.name}}/start'">Start</div>
