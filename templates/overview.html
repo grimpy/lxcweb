@@ -4,17 +4,18 @@
     <tr>
         <th>Name</th><th>Status</th><th>Actions</th>
     </tr>
-    {% for name, status in machines %}
+    {% for m in machines %}
     <tr>
-        <td><a href="./{{ name }}">{{ name }}<a></td>
-        <td>{{ status }}</td>
+        <td>{{ m.name }}</td>
+        <td class="status_{{m.status}}">{{ m.status }}</td>
         <td>
-        {% if status == "STOPPED" %}
-        <a href="./{{name}}/start">Start</a>
+        {% if m.status == "STOPPED" %}
+        <div class="action" onclick="if (confirm('Start machine?')) location='./{{m.name}}/start'">Start</div>
         {% else %} 
-        <a href="./{{name}}stop">Stop</a> 
+        <div class="action" onclick="if (confirm('Stop machine?')) location='./{{m.name}}/stop'">Stop</div>
         {% endif %}
-        <a href="./{{name}}/info">Info</a> 
+        <div class="action" onclick="newname = prompt('Enter clone/backup name:', 'new name'); location='./{{m.name}}/clone/'+newname">Clone</div>
+        <div class="action" onclick="if (confirm('Delete machine? This might take a while!')) location='./{{m.name}}/delete'">Delete</div>
         </td>
     </tr>
   {% else %}

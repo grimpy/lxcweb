@@ -1,14 +1,6 @@
 # all the imports
 import subprocess
-from flask import Flask, request, session, g, redirect, url_for, \
-             abort, render_template, flash
-
-
-# create our little application :)
-app = Flask(__name__)
-app.config.from_object(__name__)
-
-app.config.from_envvar('FLASKR_SETTINGS', silent=True)
+import os
 
 
 def command(cmd, *args):
@@ -16,39 +8,60 @@ def command(cmd, *args):
     cargs.extend(args)
     return subprocess.check_output(cargs)
 
+class LXC(object):
+    def __init__(self, path='/var/lib/lxc'):
+        self._path = path
 
-@app.route('/')
-def show_container():
-    names = command("lxc", "ls", "-x").strip().split()
-    machines = dict()
-    for name in names:
-        if not name:
-            continue
-        state = "STOPPED"
-        if names.count(name) > 1:
-            state = "RUNNING"
-        machines[name] = state
-    return render_template('overview.html', machines=sorted(machines.items()))
+    def list(self):
+        names = command("lxc", "ls", "-x").strip().split()
+        machines = dict()
+        for name in names:
+            if not name:
+                continue
+            state = "STOPPED"
+            if names.count(name) > 1:
+                state = "RUNNING"
+            machines[name] = state
+        return [ Machine(name, self._path, status) for name, status in sorted(machines.items()) ]
 
-@app.route('/<name>/')
-def info(name):
-    status = command("lxc", "info", "-n", name, "-s").strip().split()[-1]
-    return render_template('details.html', name=name, status=status)
+    def getMachine(self, name):
+        return Machine(name, self._path)
 
 
-@app.route('/<name>/<action>')
-def action(name, action):
+class Machine(object):
+
     WAITMAP = {'start': 'RUNNING', 'freeze': 'FROZEN', 'unfreeze': 'RUNNING', 'stop': 'STOPPED'}
-    args = [action, "-n", name]
-    if action == "start":
-        args.append("-d")
-    result = command("lxc", *args)
-    if action in WAITMAP:
-        command("lxc", 'wait', "-n", name, "-s", WAITMAP[action])
-    if action != "info":
-        return redirect(url_for('info', name=name))
-    else:
+
+    def __init__(self, name, basepath, status=None):
+        self.name = name
+        self._path = os.path.join(basepath, name)
+        self._status = status
+
+    def _action(self, action, wait=True, extra=None):
+        args = [action, "-n", self.name]
+        if extra:
+            args.extend(extra)
+        result = command("lxc", *args)
+        if wait and action in self.WAITMAP:
+            command("lxc", 'wait', "-n", self.name, "-s", self.WAITMAP[action])
         return result
 
-if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0")
+    def start(self, wait=True):
+        return self._action('start', wait, ['-d'])
+
+    def stop(self, wait=True):
+        return self._action('stop', wait)
+
+    def clone(self, newname):
+        return command('lxc', 'clone', '-o', self.name, '-n', newname)
+
+    def get_status(self, reload=False):
+        if not self._status or reload:
+            self._status = command("lxc", "info", "-n", self.name, "-s").strip().split()[-1]
+        return self._status
+
+    def delete(self):
+        self._action('destroy')
+
+    status = property(fget=get_status)
+
