@@ -14,7 +14,7 @@
         {% else %} 
         <div class="action" onclick="if (confirm('Stop machine?')) location='./{{m.name}}/stop'">Stop</div>
         {% endif %}
-        <div class="action" onclick="newname = prompt('Enter clone/backup name:', 'new name'); location='./{{m.name}}/clone/'+newname">Clone</div>
+        <div class="action" onclick="newname = prompt('Enter clone/backup name:', 'new name'); if (newname) location='./{{m.name}}/clone/'+newname">Clone</div>
         <div class="action" onclick="if (confirm('Delete machine? This might take a while!')) location='./{{m.name}}/delete'">Delete</div>
         </td>
     </tr>
