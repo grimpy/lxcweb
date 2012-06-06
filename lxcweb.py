@@ -33,7 +33,7 @@ def action(name, action):
     m = l.getMachine(name)
     result = getattr(m, action)()
     if action != "info":
-        return redirect(url_for('info', name=name))
+        return redirect(url_for('show_container'))
     else:
         return result
 
