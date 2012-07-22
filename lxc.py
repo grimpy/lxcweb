@@ -13,7 +13,7 @@ class LXC(object):
         self._path = path
 
     def list(self):
-        names = command("lxc", "ls", "-x").strip().split()
+        names = command("lxc-ls", "-x").strip().split()
         machines = dict()
         for name in names:
             if not name:
@@ -38,12 +38,12 @@ class Machine(object):
         self._status = status
 
     def _action(self, action, wait=True, extra=None):
-        args = [action, "-n", self.name]
+        args = ["-n", self.name]
         if extra:
             args.extend(extra)
-        result = command("lxc", *args)
+        result = command("lxc-%s" % action, *args)
         if wait and action in self.WAITMAP:
-            command("lxc", 'wait', "-n", self.name, "-s", self.WAITMAP[action])
+            command('lxc-wait', "-n", self.name, "-s", self.WAITMAP[action])
         return result
 
     def start(self, wait=True):
@@ -53,11 +53,11 @@ class Machine(object):
         return self._action('stop', wait)
 
     def clone(self, newname):
-        return command('lxc', 'clone', '-o', self.name, '-n', newname)
+        return command('lxc-clone', '-o', self.name, '-n', newname)
 
     def get_status(self, reload=False):
         if not self._status or reload:
-            self._status = command("lxc", "info", "-n", self.name, "-s").strip().split()[-1]
+            self._status = command("lxc-info", "-n", self.name, "-s").strip().split()[-1]
         return self._status
 
     def delete(self):
