@@ -19,9 +19,17 @@ def command(cmd, *args):
     return subprocess.check_output(cargs)
 
 
+def machinesorter(m1, m2):
+    if m1.get_status() == 'RUNNING' and m2.get_status() != 'RUNNING':
+        return -1
+    elif m1.get_status() != 'RUNNING' and m2.get_status() == 'RUNNING':
+        return 1
+    return cmp(m1.name, m2.name)
+
 @app.route('/')
 def show_container():
-    return render_template('overview.html', machines=l.list())
+    machines = l.list()
+    return render_template('overview.html', machines=sorted(machines, machinesorter))
 
 @app.route('/<name>/')
 def info(name):
