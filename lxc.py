@@ -14,15 +14,8 @@ class LXC(object):
 
     def list(self):
         names = command("lxc-ls", "-x").strip().split()
-        machines = dict()
-        for name in names:
-            if not name:
-                continue
-            state = "STOPPED"
-            if names.count(name) > 1:
-                state = "RUNNING"
-            machines[name] = state
-        return [ Machine(name, self._path, status) for name, status in sorted(machines.items()) ]
+        machines = [ Machine(name, self._path) for name in names ]
+        return machines
 
     def getMachine(self, name):
         return Machine(name, self._path)
