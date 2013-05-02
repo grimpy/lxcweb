@@ -6,7 +6,7 @@
     </tr>
     {% for m in machines %}
     <tr>
-        <td class="{{m.status}}">{{ m.name }}</td>
+        <td class="{{m.klass}}">{{ m.name }}</td>
         <td>
             {% if m.status == "STOPPED" %}
             <a title="Start" data-name="{{ m.name }}" role="button" onclick="if (confirm('Start machine?')) location='./{{m.name}}/start'" class="btn btn-success" ><i class="icon-play icon-white"></i></a>

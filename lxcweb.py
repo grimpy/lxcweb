@@ -28,7 +28,12 @@ def machinesorter(m1, m2):
 
 @app.route('/')
 def show_container():
+    classmap = {'RUNNING': 'text-success',
+                'STOPPED': 'text-error',
+               }
     machines = l.list()
+    for machine in machines:
+        machine.klass = classmap.get(machine.status, 'text-warning') 
     return render_template('overview.html', machines=sorted(machines, machinesorter))
 
 @app.route('/<name>/')
