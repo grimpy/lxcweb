@@ -1,13 +1,13 @@
 {% extends "layout.html" %}
 {% block body %}
-    <h1>{{ machine.name }}</h1>
-    <label>Status:</label><span>{{ machine.status }}</span>
-    <div>
-        {% if machine.status == "STOPPED" %}
-        <a href="./start">Start</a>
-        {% else %} 
-        <a href="./stop">Stop</a> 
-        {% endif %}
-    </div>
+<h2>{{ machine.name }}</h2>
+<label>Status:</label><span>{{ machine.status }}</span>
+<div>
+    {% if machine.status == "STOPPED" %}
+    <a class="btn btn-success" href="./start"><i class="icon-white icon-start"></i></a>
+    {% else %} 
+    <a class="btn btn-warning" href="./stop"><i class="icon-white icon-stop"></i></a>
+    {% endif %}
+</div>
 
 {% endblock %}

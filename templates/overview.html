@@ -1,24 +1,36 @@
 {% extends "layout.html" %}
 {% block body %}
-<table>
+<table class="table table-condensed table-hover">
     <tr>
         <th>Name</th><th>Actions</th>
     </tr>
     {% for m in machines %}
     <tr>
-        <td class="status_{{m.status}}">{{ m.name }}</td>
+        <td class="{{m.status}}">{{ m.name }}</td>
         <td>
-        {% if m.status == "STOPPED" %}
-        <div class="action" onclick="if (confirm('Start machine?')) location='./{{m.name}}/start'">Start</div>
-        {% else %} 
-        <div class="action" onclick="if (confirm('Stop machine?')) location='./{{m.name}}/stop'">Stop</div>
-        {% endif %}
-        <div class="action" onclick="newname = prompt('Enter clone/backup name:', 'new name'); if (newname) location='./{{m.name}}/clone/'+newname">Clone</div>
-        <div class="action" onclick="if (confirm('Delete machine? This might take a while!')) location='./{{m.name}}/delete'">Delete</div>
+            {% if m.status == "STOPPED" %}
+            <a title="Start" data-name="{{ m.name }}" role="button" onclick="if (confirm('Start machine?')) location='./{{m.name}}/start'" class="btn btn-success" ><i class="icon-play icon-white"></i></a>
+            {% else %} 
+            <div title="stop" class="action btn btn-warning" onclick="if (confirm('Stop machine?')) location='./{{m.name}}/stop'"><i class="icon-off icon-white"></i></div>
+            {% endif %}
+            <div title="Clone" class="action btn btn-inverse" onclick="newname = prompt('Enter clone/backup name:', 'new name'); if (newname) location='./{{m.name}}/clone/'+newname"><i class="icon-white icon-retweet"></i></div>
+            <div title="Delete" class="action btn btn-danger" onclick="if (confirm('Delete machine? This might take a while!')) location='./{{m.name}}/delete'"><i class="icon-white icon-trash"></i></div>
         </td>
     </tr>
-  {% else %}
+    {% else %}
     <li><em>Unbelievable.  No machine here so far</em>
-  {% endfor %}
+    {% endfor %}
 </table>
+<div id="startmachine" class="modal hide fade">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Machine action</h3>
+    </div>
+    <div class="modal-body">You are about to start this machine</div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        <button id="startmachinebtn" class="btn btn-primary" >Start</button>
+    </div>
+
+</div>
 {% endblock %}

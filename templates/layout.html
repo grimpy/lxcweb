@@ -1,7 +1,16 @@
 <!doctype html>
-<title>LXC Control</title>
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
-<div class=page>
-  <h1>LXC Control</h1>
-  {% block body %}{% endblock %}
-</div>
+<html>
+    <head>
+        <title>LXC Control</title>
+        <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+        <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/lxc.js') }}"></script>
+    </head>
+    <body>
+        <div class="container">
+            <h1>LXC Control</h1>
+            {% block body %}{% endblock %}
+        </div>  
+    </body>
+</html>
