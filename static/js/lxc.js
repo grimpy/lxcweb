@@ -1,7 +1,22 @@
 $(document).ready(function(){
-    $("#startmachinebtn").on('click', function () {
-        var name = $("#startmachine").data('name');
-        alert(name);
+    $("#machineaction").on("show", function () {
+        var action = $(this).data('modal').options.action;
+        var message = $(".modal-body", this).html().replace("%action%", action);
+        $(".modal-body", this).html(message);
+        $(".btn-primary", this).html(action);
     });
+    $("#machineaction .btn-primary").click(function () {
+        var name = $("#machineaction").data('modal').options.name;
+        var action = $("#machineaction").data('modal').options.action;
+        $.ajax({
+            url: "/" + name + "/" + action,
+            success: function () {
+                window.location.reload();
+            },
+
+        });
+        $("#machineaction").modal("hide");
+    });
+
 
 });
