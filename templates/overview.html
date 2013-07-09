@@ -2,11 +2,12 @@
 {% block body %}
 <table class="table table-condensed table-hover">
     <tr>
-        <th>Name</th><th>Actions</th>
+        <th>Name</th><th>IP Address</th><th>Actions</th>
     </tr>
     {% for m in machines %}
     <tr>
         <td class="{{m.klass}}">{{ m.name }}</td>
+        <td>{{ m.ip }}</td>
         <td>
             {% if m.status == "STOPPED" %}
             <a title="Start" data-action="start" data-name="{{ m.name }}" role="button" role="dialog" data-toggle="modal" data-target="#machineaction" class="btn btn-success" ><i class="icon-play icon-white"></i></a>

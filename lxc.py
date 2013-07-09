@@ -1,6 +1,9 @@
 # all the imports
 import subprocess
 import os
+import re
+
+IPREC = re.compile("^\s+inet\s(?P<ip>.*?)\/", re.M)
 
 
 def command(cmd, *args):
@@ -29,6 +32,7 @@ class Machine(object):
         self.name = name
         self._path = os.path.join(basepath, name)
         self._status = status
+        self._ip = None
 
     def _action(self, action, wait=True, extra=None):
         args = ["-n", self.name]
@@ -38,6 +42,18 @@ class Machine(object):
         if wait and action in self.WAITMAP:
             command('lxc-wait', "-n", self.name, "-s", self.WAITMAP[action])
         return result
+
+    @property
+    def ip(self):
+        if not self._ip:
+            if self.get_status() == 'RUNNING':
+                ipinfo = command("lxc-attach", "-s", "NETWORK", "-n", self.name, "--", "ip", "a", "s", "dev", "eth0")
+                for match in IPREC.finditer(ipinfo):
+                    self._ip = match.group('ip')
+                    break
+            else:
+                self._ip = 'N/A'
+        return self._ip
 
     def start(self, wait=True):
         return self._action('start', wait, ['-d'])
