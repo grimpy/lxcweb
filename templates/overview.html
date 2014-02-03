@@ -14,7 +14,7 @@
             {% else %} 
             <div title="stop" data-action="stop" data-name="{{ m.name }}" role="button" role="dialog" data-toggle="modal" data-target="#machineaction" class="btn btn-warning" ><i class="icon-off icon-white"></i></div>
             {% endif %}
-            <div title="Clone" class="action btn btn-inverse" onclick="newname = prompt('Enter clone/backup name:', 'new name'); if (newname) location='./{{m.name}}/clone/'+newname"><i class="icon-white icon-retweet"></i></div>
+            <div title="Clone" data-action="clone" data-name="{{ m.name }}" data-target="#machineclone" data-toggle="modal" class="btn btn-inverse" role="button" role="dialog"><i class="icon-white icon-retweet"></i></div>
             <div title="Delete" data-action="delete" data-name="{{ m.name }}" role="button" role="dialog" data-toggle="modal" data-target="#machineaction" class="btn btn-danger"><i class="icon-white icon-trash"></i></div>
         </td>
     </tr>
@@ -31,6 +31,26 @@
     <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
         <button class="btn btn-primary" ></button>
+    </div>
+</div>
+<div id="machineclone" class="modal hide fade action-modal">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>Clone machine</h3>
+    </div>
+    <div class="modal-body">
+        <form class="form-horizontal">
+            <div class="control-group">
+                <label class="control-label" for="clonename">New machine name</label>
+                <div class="controls">
+                    <input type="text" id="clonename" placeholder="name">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        <button class="btn btn-primary" type="button">Clone</button>
     </div>
 </div>
 

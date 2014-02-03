@@ -17,6 +17,19 @@ $(document).ready(function(){
         });
         $("#machineaction").modal("hide");
     });
+    $("#machineclone .btn-primary").click(function () {
+        var name = $("#machineclone").data('modal').options.name;
+        var newname = $("#clonename").val();
+        if (newname) {
+            $.ajax({
+                url: "/" + name + "/clone/" + newname,
+                success: function () {
+                    window.location.reload();
+                },
+            });
+        }
+        $("#machineclone").modal("hide");
+    });
 
 
 });
