@@ -4,9 +4,9 @@
 <label>Status:</label><span>{{ machine.status }}</span>
 <div>
     {% if machine.status == "STOPPED" %}
-    <a class="btn btn-success" href="./start"><i class="icon-white icon-start"></i></a>
+    <a class="btn btn-success" href="./start"><i class="icon-white icon-play"></i></a>
     {% else %} 
-    <a class="btn btn-warning" href="./stop"><i class="icon-white icon-stop"></i></a>
+    <a class="btn btn-warning" href="./stop"><i class="icon-white icon-off"></i></a>
     {% endif %}
 </div>
 
