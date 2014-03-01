@@ -1,40 +1,33 @@
-# all the imports
-import subprocess
-from flask import Flask, request, session, g, redirect, url_for, \
-             abort, render_template, flash
+from flask import Flask, redirect, url_for, \
+             render_template
 import lxc
-
 
 # create our little application :)
 app = Flask(__name__)
 app.config.from_object(__name__)
 
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
-l = lxc.LXC()
 
-
-def command(cmd, *args):
-    cargs = [ cmd ]
-    cargs.extend(args)
-    return subprocess.check_output(cargs)
-
-
-def machinesorter(m1, m2):
-    if m1.get_status() == 'RUNNING' and m2.get_status() != 'RUNNING':
-        return -1
-    elif m1.get_status() != 'RUNNING' and m2.get_status() == 'RUNNING':
-        return 1
-    return cmp(m1.name, m2.name)
+def machinesorter(m):
+    order = ['RUNNING', 'FROZEN', 'PAUSED']
+    if m.state in order:
+        nr = order.index(m.state)
+    else:
+        nr = 9
+    return "%s%s" % (nr, m.name)
 
 @app.route('/')
 def show_container():
     classmap = {'RUNNING': 'text-success',
                 'STOPPED': 'text-error',
                }
-    machines = l.list()
-    for machine in machines:
-        machine.klass = classmap.get(machine.status, 'text-warning') 
-    return render_template('overview.html', machines=sorted(machines, machinesorter))
+    names = lxc.list_containers()
+    machines = list()
+    for name in names:
+        machine = lxc.Container(name)
+        machine.klass = classmap.get(machine.state, 'text-warning')
+        machines.append(machine)
+    return render_template('overview.html', machines=sorted(machines, key=machinesorter))
 
 @app.route('/<name>/')
 def info(name):
@@ -43,7 +36,7 @@ def info(name):
 
 @app.route('/<name>/<action>')
 def action(name, action):
-    m = l.getMachine(name)
+    m = lxc.Container(name)
     result = getattr(m, action)()
     if action != "info":
         return redirect(url_for('show_container'))
@@ -52,13 +45,13 @@ def action(name, action):
 
 @app.route('/<name>/delete')
 def deleteMachine(name):
-    m = l.getMachine(name)
-    m.delete()
+    m = lxc.Container(name)
+    m.destroy()
     return redirect(url_for('show_container'))
 
 @app.route('/<name>/clone/<newname>')
 def clone(name, newname):
-    m = l.getMachine(name)
+    m = lxc.Container(name)
     m.clone(newname)
     return redirect(url_for('show_container'))
 

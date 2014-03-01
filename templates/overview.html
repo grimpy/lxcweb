@@ -7,9 +7,9 @@
     {% for m in machines %}
     <tr>
         <td class="{{m.klass}}">{{ m.name }}</td>
-        <td>{{ m.ip }}</td>
+        <td>{{ ', '.join(m.get_ips()) }}</td>
         <td>
-            {% if m.status == "STOPPED" %}
+            {% if m.state == "STOPPED" %}
             <a title="Start" data-action="start" data-name="{{ m.name }}" role="button" role="dialog" data-toggle="modal" data-target="#machineaction" class="btn btn-success" ><i class="icon-play icon-white"></i></a>
             {% else %} 
             <div title="stop" data-action="stop" data-name="{{ m.name }}" role="button" role="dialog" data-toggle="modal" data-target="#machineaction" class="btn btn-warning" ><i class="icon-off icon-white"></i></div>
