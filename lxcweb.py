@@ -46,6 +46,8 @@ def action(name, action):
 @app.route('/<name>/delete')
 def deleteMachine(name):
     m = lxc.Container(name)
+    if m.running:
+        m.stop()
     m.destroy()
     return redirect(url_for('show_container'))
 
