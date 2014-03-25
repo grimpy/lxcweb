@@ -31,7 +31,7 @@ def show_container():
 
 @app.route('/<name>/')
 def info(name):
-    return render_template('details.html', machine=l.getMachine(name))
+    return render_template('details.html', machine=lxc.Container(name))
 
 
 @app.route('/<name>/<action>')
